@@ -1,54 +1,149 @@
-# React + TypeScript + Vite
+Todo DApp
+A decentralized application (DApp) for managing todo tasks on the Ethereum blockchain, built with React, TypeScript, Vite, and Tailwind CSS. This project integrates with Ethereum smart contracts using ethers.js and @usedapp/core, providing a modern development setup with Hot Module Replacement (HMR) and type-aware ESLint rules.
+Features
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Create, view, and complete todo tasks stored on the Ethereum blockchain.
+Connect to Ethereum wallets (e.g., MetaMask) for secure interactions.
+Type-safe development with TypeScript and ESLint.
+Responsive UI styled with Tailwind CSS.
+Fast development experience with Vite’s HMR.
 
-Currently, two official plugins are available:
+Prerequisites
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Node.js (v18 or later recommended)
+pnpm or npm
+MetaMask browser extension
+An Ethereum network (e.g., Hardhat, Ganache, or Sepolia testnet)
 
-## Expanding the ESLint configuration
+Installation
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Clone the repository:
+git clone https://github.com/your-username/todo-dapp.git
+cd todo-dapp
 
-```js
+
+Install dependencies:
+pnpm install
+# or
+npm install
+
+
+Start the development server:
+pnpm dev
+# or
+npm run dev
+
+The app will be available at http://localhost:5173.
+
+
+Available Scripts
+
+pnpm dev or npm run dev: Runs the development server with HMR.
+pnpm build or npm run build: Compiles TypeScript and builds the production bundle.
+pnpm lint or npm run lint: Runs ESLint to check code quality.
+pnpm preview or npm run preview: Previews the production build locally.
+
+Project Setup
+This project uses Vite for fast builds and development, with the following plugins:
+
+@vitejs/plugin-react: Enables Fast Refresh using Babel.
+@tailwindcss/vite: Integrates Tailwind CSS for styling.
+
+ESLint Configuration
+To enable type-aware linting, update eslint.config.js as follows:
+import tseslint from 'typescript-eslint';
+import reactX from 'eslint-plugin-react-x';
+import reactDom from 'eslint-plugin-react-dom';
+
 export default tseslint.config({
   extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
     ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
     ...tseslint.configs.stylisticTypeChecked,
   ],
+  plugins: {
+    'react-x': reactX,
+    'react-dom': reactDom,
+  },
   languageOptions: {
-    // other options...
     parserOptions: {
       project: ['./tsconfig.node.json', './tsconfig.app.json'],
       tsconfigRootDir: import.meta.dirname,
     },
   },
-})
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
   rules: {
-    // other rules...
-    // Enable its recommended typescript rules
     ...reactX.configs['recommended-typescript'].rules,
     ...reactDom.configs.recommended.rules,
   },
-})
-```
+});
+
+Dependencies
+
+react, react-dom (^19.1.0): For building the user interface.
+ethers (^5.8.0): For Ethereum blockchain interactions.
+@usedapp/core (^1.2.16): Simplifies smart contract interactions.
+tailwindcss (^4.1.7): For utility-first CSS styling.
+
+Dev Dependencies
+
+typescript (~5.8.3): For type-safe development.
+vite (^6.3.5): For fast builds and HMR.
+eslint (^9.25.0): For linting with React and TypeScript rules.
+@vitejs/plugin-react (^4.4.1): For React Fast Refresh.
+
+Smart Contract Integration
+This DApp is designed to interact with an Ethereum smart contract (e.g., a Voting or Todo contract). To connect to a smart contract:
+
+Deploy your contract using tools like Remix or Hardhat.
+Update your React components with the contract address and ABI:import { useContractFunction, useEthers } from '@usedapp/core';
+import { Contract } from 'ethers';
+import TodoABI from './Todo.json'; // Your contract ABI
+
+const contractAddress = 'YOUR_CONTRACT_ADDRESS';
+const contract = new Contract(contractAddress, TodoABI);
+
+
+Use @usedapp/core hooks to call contract functions, such as adding or completing todos.
+
+Example Smart Contract
+For practice, you can use a simple smart contract like the one below (deployed separately):
+pragma solidity ^0.8.0;
+
+contract Todo {
+    struct Task {
+        string description;
+        bool completed;
+    }
+    mapping(uint => Task) public tasks;
+    uint public taskCount;
+
+    function addTask(string memory _description) public {
+        tasks[taskCount] = Task(_description, false);
+        taskCount++;
+    }
+
+    function completeTask(uint _taskId) public {
+        require(_taskId < taskCount, "Task does not exist");
+        tasks[_taskId].completed = true;
+    }
+}
+
+Extending the Project
+
+Add task categories or deadlines to the smart contract.
+Implement wallet-based user authentication.
+Enhance the UI with Tailwind CSS components.
+Add error handling for failed blockchain transactions.
+
+Troubleshooting
+
+MetaMask connection issues: Ensure MetaMask is installed and connected to the correct network.
+TypeScript errors: Check tsconfig.json for correct paths and settings.
+Linting errors: Run pnpm lint to identify and fix issues.
+Contract interaction fails: Verify the contract address and ABI are correct.
+
+For more information, visit:
+
+Vite Documentation
+ethers.js Documentation
+@usedapp/core Documentation
+
